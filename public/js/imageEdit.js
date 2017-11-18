@@ -87,7 +87,8 @@ function Crop(){
     cropformId.appendChild(x);
     cropformId.appendChild(y);
     cropformId.appendChild(submitButton);
-    cropForm.addEventListener("submit", function() {
+    cropForm.addEventListener("submit", function(event) {
+      event.preventDefault();
       postForm(cropForm, route)
       .then(displayImage)
     });
@@ -121,7 +122,8 @@ function Rotate() {
   rotateForm.appendChild(degrees);
   rotateForm.appendChild(BGcolor);
   rotateForm.appendChild(submitButton);
-  rotateForm.addEventListener("submit", function() {
+  rotateForm.addEventListener("submit", function(event) {
+    event.preventDefault();
     postForm(rotateForm, route)
     .then(displayImage)
   }); 
@@ -161,7 +163,8 @@ function Resize() {
   resizeForm.appendChild(y);
   resizeForm.appendChild(aspect);
   resizeForm.appendChild(submitButton);
-  resizeForm.addEventListener("submit", function() {
+  resizeForm.addEventListener("submit", function(event) {
+    event.preventDefault();
     postForm(resizeForm, route)
     .then(displayImage)
   }); 
