@@ -24,16 +24,16 @@ app.get('/api/image/commands', (req, res) => {
 })
 
 app.post('/api/image', upload.array(), (req, res) => {
-  function returnStatus() {
-    res.status(200).send();
-  }
   if (req.body.url) {
     console.log(req.body.url);
     //request(req.body.url).pipe(fs.createWriteStream('public/doodle.png')).on('close', returnStatus());
-    request(req.body.url).pipe(fs.createWriteStream('public/images/doodle.png'));
+    request(req.body.url)
+    .pipe(fs.createWriteStream('public/images/doodle.png'))
+    .on('close', function() {
+      res.status(200).send();
+    });
   }
-  returnStatus();
-  res.status(400).send();
+  //res.status(400).send();
 })
 
 app.post('/api/image/rotate', upload.array(), (req, res) => {
@@ -47,9 +47,8 @@ app.post('/api/image/rotate', upload.array(), (req, res) => {
   .write(out, function (err) {
     if (!err) console.log('done');
     else console.log(err);
+    res.status(200).send();
   });
-  
-      res.status(200).send();
   //res.status(400).send();
 
 });
@@ -79,8 +78,9 @@ app.post('/api/image/resize', upload.array(), (req, res) => {
     .resize(x, y, aspect)
     .write(out, function (err) {
       if (!err) console.log('done');
+      else console.log(err);
+      res.status(200).send();
     });
-    res.status(200).send();
 
   //res.status(400).send();
 })
@@ -92,9 +92,9 @@ app.post('/api/image/crop', upload.array(), (req, res) => {
   .crop(req.body.width, req.body.height, req.body.x, req.body.y)
   .write(out, function (err) {
     if (!err) console.log('done');
+    else console.log(err);
+    res.status(200).send();
   });
-  res.status(200).send();
-
   //res.status(400).send();
 })
 
