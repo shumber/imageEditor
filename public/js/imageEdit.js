@@ -1,71 +1,188 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM fully loaded and parsed');
-  getCommands()
-  .then(function(json) {
-    console.log(json)
-    var imageManipulationControls = document.getElementById("imageControl");
-    var controlButtonsContainer = document.createElement('div');
-    controlButtonsContainer.setAttribute('name', 'controlButtonsContainer' );
-    imageManipulationControls.appendChild(controlButtonsContainer);
-    for (var i = 0; i < json.length; i++) {
-      var controlButton = document.createElement('button');
-      controlButton.innerHTML = json[i];
-      console.log(controlButton.innerHTML);
-      controlButton.addEventListener("click", eval(json[i]));
-      controlButtonsContainer.appendChild(controlButton);
-    }
-      /*
-      var controlButtonCrop = document.createElement('button');
-      var controlButtonResize = document.createElement('button');
-      var controlButtonRotate = document.createElement('button');
 
-      controlButtonCrop.innerHTML = "Crop";
-      controlButtonResize.innerHTML = "Resize";
-      controlButtonRotate.innerHTML = "Rotate";
+  var loadImageForm = document.getElementById('add-image');
+  loadImageForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      postForm(loadImageForm, '/api/image')
+        .then(displayImage)
+        .then(displayCommands)
+          
+        .catch(function(e) {
+            throw e;
+        });
+  });
+});
 
-      controlButtonCrop.addEventListener("click", crop);
-      controlButtonResize.addEventListener("click", resize);
-      controlButtonRotate.addEventListener("click", rotate);
-      imageManipulationControls.appendChild(controlButtonsContainer);
-      controlButtonsContainer.appendChild(controlButtonCrop);
-      controlButtonsContainer.appendChild(controlButtonResize);
-      controlButtonsContainer.appendChild(controlButtonRotate);
-      */
-  })
   //.catch(function(e) {
   //  throw e;
   //});
 
+function displayImage() {
+    var imageDisplay = document.getElementById('image');
+    imageDisplay.innerHTML = '';
+    var image = document.createElement('img');
+    image.setAttribute('src', '/images/doodle.png');
+    imageDisplay.appendChild(image);
+}
 
-  function Crop(){
+
+function displayCommands() {
+    getCommands()
+    .then(function(json) {
+      console.log(json)
+      var instructions = document.getElementById('instructions');
+      instructions.innerHTML = 'Select an operation from below:';
+      var imageManipulationControls = document.getElementById("imageControl");
+      var controlButtonsContainer = document.createElement('div');
+      controlButtonsContainer.setAttribute('name', 'controlButtonsContainer' );
+      imageManipulationControls.appendChild(controlButtonsContainer);
+      for (var i = 0; i < json.length; i++) {
+        var controlButton = document.createElement('button');
+        controlButton.innerHTML = json[i];
+        console.log(controlButton.innerHTML);
+        controlButton.addEventListener("click", eval(json[i]));
+        controlButtonsContainer.appendChild(controlButton);
+      }
+    });
+}
+
+
+function Crop(){
+    var route = '/api/image/crop';
+    var cropForm = document.createElement('form');
+    cropForm.setAttribute('id', 'cropParams');
+    cropForm.setAttribute('action', '/api/image/crop');
+    cropForm.setAttribute('method', 'POST');
+    var submitButton = document.createElement('input');
+    submitButton.setAttribute('value', 'Process');
+    submitButton.setAttribute('type', 'submit');
     var instructions = document.getElementById("instructions");
     instructions.innerHTML = "Provide the following paramaters:";
     var imageControl = document.getElementById("imageControl");
     imageControl.innerHTML = '';
-    var parameters = document.createElement('div');
-    parameters.setAttribute('name', 'parameters' );
+    //var parameters = document.createElement('div');
+    //parameters.setAttribute('name', 'parameters' );
     var height = document.createElement('input');
     height.placeholder = "enter crop height in pixels";
+    height.setAttribute('name', 'height');
+    height.setAttribute('type', 'text');
     var width = document.createElement('input');
     width.placeholder = "enter crop width in pixels";
+    width.setAttribute('name', 'width');
+    width.setAttribute('type', 'text');
     var x = document.createElement('input');
     x.placeholder = "enter x coordinate";
+    x.setAttribute('name', 'x');
+    x.setAttribute('type', 'text');
     var y = document.createElement('input');
     y.placeholder = "enter y coordinate";
+    y.setAttribute('name', 'y');
+    y.setAttribute('type', 'text');
+    imageControl.appendChild(cropForm);
+    var cropformId = document.getElementById('cropParams')
+    cropformId.appendChild(height);
+    cropformId.appendChild(width);
+    cropformId.appendChild(x);
+    cropformId.appendChild(y);
+    cropformId.appendChild(submitButton);
+    cropForm.addEventListener("submit", function() {
+      postForm(cropForm, route)
+      .then(displayImage)
+    });
+}
 
-    imageControl.appendChild(height);
-    imageControl.appendChild(width);
-    imageControl.appendChild(x);
-    imageControl.appendChild(y);
+function Rotate() {
+  var route = '/api/image/rotate';
+  var rotateForm = document.createElement('form');
+  rotateForm.setAttribute('id', 'rotateParams');
+  rotateForm.setAttribute('action', route);
+  rotateForm.setAttribute('method', 'POST');
+  var submitButton = document.createElement('input');
+  submitButton.setAttribute('value', 'Process');
+  submitButton.setAttribute('type', 'submit');
+  var instructions = document.getElementById("instructions");
+  instructions.innerHTML = "Provide the following paramaters:";
+  var imageControl = document.getElementById("imageControl");
+  imageControl.innerHTML = '';
+
+  var degrees = document.createElement('input');
+  degrees.placeholder = "enter degrees of rotation";
+  degrees.setAttribute('name', 'degrees');
+  degrees.setAttribute('type', 'text');
+
+  var BGcolor = document.createElement('input');
+  BGcolor.placeholder = "enter color";
+  BGcolor.setAttribute('name', 'bgColor');
+  BGcolor.setAttribute('type', 'text');
+
+  imageControl.appendChild(rotateForm);
+  rotateForm.appendChild(degrees);
+  rotateForm.appendChild(BGcolor);
+  rotateForm.appendChild(submitButton);
+  rotateForm.addEventListener("submit", function() {
+    postForm(rotateForm, route)
+    .then(displayImage)
+  }); 
+}
+
+function Resize() {
+  var route = '/api/image/resize';
+  var resizeForm = document.createElement('form');
+  resizeForm.setAttribute('id', 'resizeParams');
+  resizeForm.setAttribute('action', route);
+  resizeForm.setAttribute('method', 'POST');
+  var submitButton = document.createElement('input');
+  submitButton.setAttribute('value', 'Process');
+  submitButton.setAttribute('type', 'submit');
+  var instructions = document.getElementById("instructions");
+  instructions.innerHTML = "Provide the following paramaters:";
+  var imageControl = document.getElementById("imageControl");
+  imageControl.innerHTML = '';
+
+  var x = document.createElement('input');
+  x.placeholder = "enter x dimension";
+  x.setAttribute('name', 'x');
+  x.setAttribute('type', 'text');
+
+  var y = document.createElement('input');
+  y.placeholder = "enter y dimension";
+  y.setAttribute('name', 'y');
+  y.setAttribute('type', 'text');
+
+  var aspect = document.createElement('input');
+  aspect.placeholder = "Maintain spect? 1 for yes, 0 for no";
+  aspect.setAttribute('name', 'aspect');
+  aspect.setAttribute('type', 'text');
+
+  imageControl.appendChild(resizeForm);
+  resizeForm.appendChild(x);
+  resizeForm.appendChild(y);
+  resizeForm.appendChild(aspect);
+  resizeForm.appendChild(submitButton);
+  resizeForm.addEventListener("submit", function() {
+    postForm(resizeForm, route)
+    .then(displayImage)
+  }); 
+
+  
+}
 
 
-
-  }
-  function Resize(){}
-  function Rotate(){}
-
-});
+function postForm(form, route) {
+    var data = new FormData(form);
+  
+    return fetch(route, {
+        method: 'POST',
+        body: data
+    })
+        .then(function(response) {
+            if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText));
+            }
+        });
+}
 
 function getCommands() {
   return fetch('/api/image/commands')
@@ -80,77 +197,3 @@ function getCommands() {
       return json.commands;
     });
 }
-
-function getBookmarks() {
-  return fetch('/api/bookmarks')
-      .then(function(response) {
-          if (response.status !== 200) {
-              return Promise.reject(new Error(response.statusText));
-          }
-
-          return response.json();
-      })
-      .then(function(json) {
-          return json.bookmarks;
-      });
-}
-
-function updateBookmarks(bookmarks) {
-  var bookmarksContainer = document.getElementById('bookmarks');
-
-  // empty bookmarks container
-  bookmarksContainer.innerHTML = '';
-
-  for (var i = 0; i < bookmarks.length; i++) {
-      var bookmark = document.createElement('div');
-      var documentUrl = document.createElement('a');
-      var deleteButton = document.createElement('button');
-      documentUrl.innerHTML = bookmarks[i];
-      documentUrl.setAttribute('href', bookmarks[i]);
-      deleteButton.innerHTML = "remove";
-      deleteButton.setAttribute('name', 'remove');
-      deleteButton.addEventListener("click", deleteBookmark);
-      deleteButton.setAttribute('data-bookmarkIndex', i)
-      deleteButton.setAttribute('enabled', '');
-      bookmark.appendChild(documentUrl);
-      bookmark.appendChild(deleteButton);
-
-      bookmarksContainer.appendChild(bookmark);
-  }
-}
-
-function deleteBookmark(index) {
-  var currentButtonIndex = this.getAttribute('data-bookmarkIndex')
-  console.log(currentButtonIndex)
-  return fetch('/api/bookmarks/'+ currentButtonIndex, {
-      method: 'DELETE'
-  })
-  .then(function(response) {
-      if (response.status !== 200) {
-          return Promise.reject(new Error(response.statusText));
-      }
-  })
-  
-  .then(getBookmarks)
-  .then(function(bookmarks) {
-      updateBookmarks(bookmarks);
-  })
-  .catch(function(e) {
-      throw e;
-  });
-}
-
-function addBookmark(form) {
-  var bookmarkData = new FormData(form);
-
-  return fetch('/api/bookmarks', {
-      method: 'POST',
-      body: bookmarkData
-  })
-      .then(function(response) {
-          if (response.status !== 200) {
-              return Promise.reject(new Error(response.statusText));
-          }
-      });
-}
-

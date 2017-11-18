@@ -7,8 +7,15 @@
         <script type="text/javascript" src="/js/imageEdit.js"></script>
     </head>
     <body>
-        <h1>Image Manipulator</h1>
-        <div id="instructions">Select an image operation from below:</div>
+        <h1>Image Manipulator  https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2@2x.png</h1>
+        <div id="instructions">Submit an image URL:</div>
+        <div id="image">
+            <form id="add-image" action="/api/image" method="POST">
+                <label for="add-image-url">URL:</label>
+                <input id="add-image-url" type="text" name="url">
+                <input type="submit" value="Save">
+            </form>
+        </div>
         <div id="imageControl">
 
         </div>
