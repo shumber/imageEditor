@@ -1,3 +1,10 @@
+/*
+Todo: 
+  add unique ID hash to filenames so that server side can deal with multiple users.
+  add better error status codes for each function
+  add function to handle different image types, so you get back the same type you submitted.
+
+*/
 const express = require('express');
 const multer  = require('multer');
 const upload = multer();
@@ -6,6 +13,9 @@ var bodyParser = require('body-parser')
 var gm = require('gm');
 var request = require('request');
 var path = require('path');
+var uuid = require('node-uuid');
+
+var uniqueID = uuid.v4();
 
 const port = 8888;
 
@@ -16,9 +26,10 @@ var imageID = 0;
 var imageURL = ""
 var out = 'public/images/doodle.png';
 var imageLoaded = 0;
+var imageName = "public/images/doodle.png"
+//var imageName = 'public/images/doodle' + uniqueID + '.png';
 
 app.use('/', express.static('public'));
-//app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/image/commands', (req, res) => {
     res.json({ commands });
@@ -27,7 +38,7 @@ app.get('/api/image/commands', (req, res) => {
 app.post('/api/image/reset', (req, res) => {
   if (imageLoaded) {
     request(imageURL)
-    .pipe(fs.createWriteStream('public/images/doodle.png'))
+    .pipe(fs.createWriteStream(imageName))
     .on('close', function() {
       res.status(200).send();
       imageLoaded = 1;
@@ -42,7 +53,7 @@ app.post('/api/image', upload.array(), (req, res) => {
     console.log(req.body.url);
     imageURL = req.body.url;
     request(imageURL)
-    .pipe(fs.createWriteStream('public/images/doodle.png'))
+    .pipe(fs.createWriteStream(imageName))
     .on('close', function() {
       res.status(200).send();
       imageLoaded = 1;
@@ -54,7 +65,7 @@ app.post('/api/image', upload.array(), (req, res) => {
 
 app.post('/api/image/rotate', upload.array(), (req, res) => {
   if (imageLoaded) {
-    var imageName = "public/images/doodle.png"
+    //var imageName = "public/images/doodle.png"
     console.log(imageName);
     console.log(req.body.bgColor);
     console.log(req.body.degrees);
@@ -72,7 +83,7 @@ app.post('/api/image/rotate', upload.array(), (req, res) => {
 
 app.post('/api/image/resize', upload.array(), (req, res) => {
   if (imageLoaded) {  
-    var imageName = "public/images/doodle.png"
+    //var imageName = "public/images/doodle.png"
     var x;
     var y;
     var aspect;
@@ -106,7 +117,6 @@ app.post('/api/image/resize', upload.array(), (req, res) => {
 
 app.post('/api/image/crop', upload.array(), (req, res) => {
   if (imageLoaded) {
-    var imageName = "public/images/doodle.png"
     gm(imageName)
     .crop(req.body.width, req.body.height, req.body.x, req.body.y)
     .write(out, function (err) {

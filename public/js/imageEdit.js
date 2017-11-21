@@ -4,52 +4,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var loadImageForm = document.getElementById('add-image');
   loadImageForm.addEventListener("submit", function(event) {
-      event.preventDefault();
-      postForm(loadImageForm, '/api/image')
-        .then(displayImage)
-        .then(displayCommands)
-          
-        .catch(function(e) {
-            throw e;
-        });
+    event.preventDefault();
+    postForm(loadImageForm, '/api/image')
+      .then(displayImage)
+      .then(displayCommands)
+        
+      .catch(function(e) {
+          throw e;
+      });
   });
 });
 
-  //.catch(function(e) {
-  //  throw e;
-  //});
 
 function displayImage() {
-    var imageDisplay = document.getElementById('image');
-    imageDisplay.innerHTML = '';
-    var image = document.createElement('img');
-    image.setAttribute('src', '/images/doodle.png');
-    imageDisplay.appendChild(image);
+  var imageDisplay = document.getElementById('image');
+  imageDisplay.innerHTML = '';
+  var image = document.createElement('img');
+  image.setAttribute('src', '/images/doodle.png');
+  imageDisplay.appendChild(image);
 }
 
 
 function displayCommands() {
-    getCommands()
-    .then(function(json) {
-      console.log(json)
-      var instructions = document.getElementById('instructions');
-      instructions.innerHTML = 'Select an operation from below:';
-      var imageManipulationControls = document.getElementById("imageControl");
-      imageManipulationControls.innerHTML = '';
-      var controlButtonsContainer = document.createElement('div');
-      controlButtonsContainer.setAttribute('name', 'controlButtonsContainer' );
-      imageManipulationControls.appendChild(controlButtonsContainer);
-      for (var i = 0; i < json.length; i++) {
-        var controlButton = document.createElement('button');
-        controlButton.innerHTML = json[i];
-        console.log(controlButton.innerHTML);
-        controlButton.addEventListener("click", eval(json[i]));
-        controlButtonsContainer.appendChild(controlButton);
-      }
-      var resetContainer = document.getElementById('reset');
-      resetContainer.innerHTML = '';
-      reset();
-    });
+  getCommands()
+  .then(function(json) {
+    console.log(json)
+    var instructions = document.getElementById('instructions');
+    instructions.innerHTML = 'Select an operation from below:';
+    var imageManipulationControls = document.getElementById("imageControl");
+    imageManipulationControls.innerHTML = '';
+    var controlButtonsContainer = document.createElement('div');
+    controlButtonsContainer.setAttribute('name', 'controlButtonsContainer' );
+    imageManipulationControls.appendChild(controlButtonsContainer);
+    for (var i = 0; i < json.length; i++) {
+      var controlButton = document.createElement('button');
+      controlButton.innerHTML = json[i];
+      console.log(controlButton.innerHTML);
+      controlButton.addEventListener("click", eval(json[i]));
+      controlButtonsContainer.appendChild(controlButton);
+    }
+    var resetContainer = document.getElementById('reset');
+    resetContainer.innerHTML = '';
+    reset();
+  });
 }
 
 function reset() {
@@ -68,48 +65,46 @@ function reset() {
 
 
 function Crop(){
-    var route = '/api/image/crop';
-    var cropForm = document.createElement('form');
-    cropForm.setAttribute('id', 'cropParams');
-    cropForm.setAttribute('action', '/api/image/crop');
-    cropForm.setAttribute('method', 'POST');
-    var submitButton = document.createElement('input');
-    submitButton.setAttribute('value', 'Process');
-    submitButton.setAttribute('type', 'submit');
-    var instructions = document.getElementById("instructions");
-    instructions.innerHTML = "Provide the following paramaters:";
-    var imageControl = document.getElementById("imageControl");
-    imageControl.innerHTML = '';
-    //var parameters = document.createElement('div');
-    //parameters.setAttribute('name', 'parameters' );
-    var height = document.createElement('input');
-    height.placeholder = "enter crop height in pixels";
-    height.setAttribute('name', 'height');
-    height.setAttribute('type', 'text');
-    var width = document.createElement('input');
-    width.placeholder = "enter crop width in pixels";
-    width.setAttribute('name', 'width');
-    width.setAttribute('type', 'text');
-    var x = document.createElement('input');
-    x.placeholder = "enter x coordinate";
-    x.setAttribute('name', 'x');
-    x.setAttribute('type', 'text');
-    var y = document.createElement('input');
-    y.placeholder = "enter y coordinate";
-    y.setAttribute('name', 'y');
-    y.setAttribute('type', 'text');
-    imageControl.appendChild(cropForm);
-    var cropformId = document.getElementById('cropParams')
-    cropformId.appendChild(height);
-    cropformId.appendChild(width);
-    cropformId.appendChild(x);
-    cropformId.appendChild(y);
-    cropformId.appendChild(submitButton);
-    cropForm.addEventListener("submit", function(event) {
-      event.preventDefault();
-      postForm(cropForm, route)
-      .then(displayImage)
-    });
+  var route = '/api/image/crop';
+  var cropForm = document.createElement('form');
+  cropForm.setAttribute('id', 'cropParams');
+  cropForm.setAttribute('action', '/api/image/crop');
+  cropForm.setAttribute('method', 'POST');
+  var submitButton = document.createElement('input');
+  submitButton.setAttribute('value', 'Process');
+  submitButton.setAttribute('type', 'submit');
+  var instructions = document.getElementById("instructions");
+  instructions.innerHTML = "Provide the following paramaters:";
+  var imageControl = document.getElementById("imageControl");
+  imageControl.innerHTML = '';
+  var height = document.createElement('input');
+  height.placeholder = "enter crop height in pixels";
+  height.setAttribute('name', 'height');
+  height.setAttribute('type', 'text');
+  var width = document.createElement('input');
+  width.placeholder = "enter crop width in pixels";
+  width.setAttribute('name', 'width');
+  width.setAttribute('type', 'text');
+  var x = document.createElement('input');
+  x.placeholder = "enter x coordinate";
+  x.setAttribute('name', 'x');
+  x.setAttribute('type', 'text');
+  var y = document.createElement('input');
+  y.placeholder = "enter y coordinate";
+  y.setAttribute('name', 'y');
+  y.setAttribute('type', 'text');
+  imageControl.appendChild(cropForm);
+  var cropformId = document.getElementById('cropParams')
+  cropformId.appendChild(height);
+  cropformId.appendChild(width);
+  cropformId.appendChild(x);
+  cropformId.appendChild(y);
+  cropformId.appendChild(submitButton);
+  cropForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    postForm(cropForm, route)
+    .then(displayImage)
+  });
 }
 
 function Rotate() {
@@ -132,7 +127,7 @@ function Rotate() {
   degrees.setAttribute('type', 'text');
 
   var BGcolor = document.createElement('input');
-  BGcolor.placeholder = "enter color";
+  BGcolor.placeholder = "enter color (blue, green...)";
   BGcolor.setAttribute('name', 'bgColor');
   BGcolor.setAttribute('type', 'text');
 
@@ -192,29 +187,29 @@ function Resize() {
 
 
 function postForm(form, route) {
-    if (form == 'none') {
-      return fetch(route, {
+  if (form == 'none') {
+    return fetch(route, {
+      method: 'POST',
+      body: ''
+    })
+      .then(function(response) {
+          if (response.status !== 200) {
+              return Promise.reject(new Error(response.statusText));
+          }
+      });
+  } else {
+    var data = new FormData(form);
+  
+    return fetch(route, {
         method: 'POST',
-        body: ''
-      })
+        body: data
+    })
         .then(function(response) {
             if (response.status !== 200) {
                 return Promise.reject(new Error(response.statusText));
             }
         });
-    } else {
-      var data = new FormData(form);
-    
-      return fetch(route, {
-          method: 'POST',
-          body: data
-      })
-          .then(function(response) {
-              if (response.status !== 200) {
-                  return Promise.reject(new Error(response.statusText));
-              }
-          });
-      }
+  }
 }
 
 function getCommands() {
