@@ -15,15 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
 function displayImage() {
   var imageDisplay = document.getElementById('image');
   imageDisplay.innerHTML = '';
   var image = document.createElement('img');
   image.setAttribute('src', '/images/doodle.png');
+  image.setAttribute('class', 'centre')
   imageDisplay.appendChild(image);
 }
-
 
 function displayCommands() {
   getCommands()
@@ -39,6 +38,7 @@ function displayCommands() {
     for (var i = 0; i < json.length; i++) {
       var controlButton = document.createElement('button');
       controlButton.innerHTML = json[i];
+      controlButton.classList.add('normalButton');
       console.log(controlButton.innerHTML);
       controlButton.addEventListener("click", eval(json[i]));
       controlButtonsContainer.appendChild(controlButton);
@@ -53,7 +53,8 @@ function reset() {
   var route = 'api/image/reset';
   var resetContainer = document.getElementById('reset');
   var resetButton = document.createElement('button');
-  resetButton.setAttribute = 
+  resetButton.classList.add('resetButton');
+  resetButton.setAttribute('title', 'Caution, you will lose your edits!')
   resetButton.innerHTML = 'Reset Image';
   resetButton.addEventListener("click", function() {
     postForm('none', route)
