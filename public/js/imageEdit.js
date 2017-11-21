@@ -74,6 +74,7 @@ function Crop(){
   var submitButton = document.createElement('input');
   submitButton.setAttribute('value', 'Process');
   submitButton.setAttribute('type', 'submit');
+  submitButton.classList.add('saveButton');
   var instructions = document.getElementById("instructions");
   instructions.innerHTML = "Provide the following paramaters:";
   var imageControl = document.getElementById("imageControl");
@@ -117,6 +118,7 @@ function Rotate() {
   var submitButton = document.createElement('input');
   submitButton.setAttribute('value', 'Process');
   submitButton.setAttribute('type', 'submit');
+  submitButton.classList.add('saveButton');
   var instructions = document.getElementById("instructions");
   instructions.innerHTML = "Provide the following paramaters:";
   var imageControl = document.getElementById("imageControl");
@@ -152,6 +154,7 @@ function Resize() {
   var submitButton = document.createElement('input');
   submitButton.setAttribute('value', 'Process');
   submitButton.setAttribute('type', 'submit');
+  submitButton.classList.add('saveButton');
   var instructions = document.getElementById("instructions");
   instructions.innerHTML = "Provide the following paramaters:";
   var imageControl = document.getElementById("imageControl");
