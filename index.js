@@ -1,8 +1,9 @@
 /*
 Todo: 
   add unique ID hash to filenames so that server side can deal with multiple users.
-  add better error status codes for each function
+  add better error status codes for each function.
   add function to handle different image types, so you get back the same type you submitted.
+  add function to delete images that are no longer in use.
 
 */
 const express = require('express');
