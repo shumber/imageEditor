@@ -35,6 +35,7 @@ function displayCommands() {
       var instructions = document.getElementById('instructions');
       instructions.innerHTML = 'Select an operation from below:';
       var imageManipulationControls = document.getElementById("imageControl");
+      imageManipulationControls.innerHTML = '';
       var controlButtonsContainer = document.createElement('div');
       controlButtonsContainer.setAttribute('name', 'controlButtonsContainer' );
       imageManipulationControls.appendChild(controlButtonsContainer);
@@ -45,7 +46,24 @@ function displayCommands() {
         controlButton.addEventListener("click", eval(json[i]));
         controlButtonsContainer.appendChild(controlButton);
       }
+      var resetContainer = document.getElementById('reset');
+      resetContainer.innerHTML = '';
+      reset();
     });
+}
+
+function reset() {
+  var route = 'api/image/reset';
+  var resetContainer = document.getElementById('reset');
+  var resetButton = document.createElement('button');
+  resetButton.setAttribute = 
+  resetButton.innerHTML = 'Reset Image';
+  resetButton.addEventListener("click", function() {
+    postForm('none', route)
+    .then(displayImage)
+    .then(displayCommands)
+  });
+  resetContainer.appendChild(resetButton);
 }
 
 
@@ -174,17 +192,29 @@ function Resize() {
 
 
 function postForm(form, route) {
-    var data = new FormData(form);
-  
-    return fetch(route, {
+    if (form == 'none') {
+      return fetch(route, {
         method: 'POST',
-        body: data
-    })
+        body: ''
+      })
         .then(function(response) {
             if (response.status !== 200) {
                 return Promise.reject(new Error(response.statusText));
             }
         });
+    } else {
+      var data = new FormData(form);
+    
+      return fetch(route, {
+          method: 'POST',
+          body: data
+      })
+          .then(function(response) {
+              if (response.status !== 200) {
+                  return Promise.reject(new Error(response.statusText));
+              }
+          });
+      }
 }
 
 function getCommands() {
